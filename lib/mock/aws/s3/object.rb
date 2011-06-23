@@ -70,7 +70,11 @@ module AWS
 
           FileUtils.makedirs File.dirname(path)
           File.open(path, 'wb') do |f|
-            f.write data
+            if data.respond_to?(:read)
+              FileUtils.copy_stream(data, f)
+            else
+              f.write data
+            end
           end
         end
         alias_method :create, :store
