@@ -24,14 +24,13 @@ module AWS
 					object
 				end
 
-        # def stream(key, bucket = nil, options = {}, &block)
-        #   data = File.open(path!(bucket, key, options)) {|f| f.read}
-        #   Value.new Response.new(:body=>data)
-        #   value(key, bucket, options) do |response|
-        #     response.read_body(&block)
-        #   end
-        # end
-
+        def stream(key, bucket, &block)
+          path = path!(bucket, key)
+          FileUtils.makedirs File.dirname(path)
+          File.open(path) do |f|
+            read_chunks(f, &block)
+          end
+        end
 
         # Makes a copy of the object with <tt>key</tt> to <tt>copy_key</tt>, preserving the ACL of the existing object if the <tt>:copy_acl</tt> option is true (default false).
         def copy(key, copy_key, bucket = nil, options = {})
@@ -97,6 +96,11 @@ module AWS
           TEMP_PATH.clone << File.join('/tmp', 'mock-aws-s3', bucket_name(bucket), name)
         end
 
+        private
+
+        def read_chunks(f)
+          yield f.read(4096) until f.eof?
+        end
       end
     end
   end
