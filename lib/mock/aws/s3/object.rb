@@ -41,17 +41,10 @@ module AWS
           FileUtils.cp_r source_key, target_key
         end
 
-        #
-        # # Fetch information about the object with <tt>key</tt> from <tt>bucket</tt>. Information includes content type, content length,
-        # # last modified time, and others.
-        # #
-        # # If the specified key does not exist, NoSuchKey is raised.
-        # def about(key, bucket = nil, options = {})
-        #   response = head(path!(bucket, key, options), options)
-        #   raise NoSuchKey.new("No such key `#{key}'", bucket) if response.code == 404
-        #   About.new(response.headers)
-        # end
-        #
+        def about(key, bucket)
+          return nil unless exists?(key, bucket)
+          {"content-length" => File.size(path!(bucket, key)).to_s}
+        end
 
         def exists?(key, bucket = nil)
           File.exists?(path!(bucket, key))
