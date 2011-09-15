@@ -24,11 +24,15 @@ module AWS
 					object
 				end
 
-        def stream(key, bucket, &block)
+        def stream(key, bucket = nil, options = {}, &block)
           path = path!(bucket, key)
           FileUtils.makedirs File.dirname(path)
           File.open(path) do |f|
-            read_chunks(f, &block)
+            if block
+              read_chunks(f, &block)
+            else
+              f.read
+            end
           end
         end
 
