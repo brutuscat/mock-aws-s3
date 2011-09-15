@@ -50,5 +50,6 @@ Gem::Specification.new do |s|
   else
     s.add_dependency(%q<rspec>, [">= 1.2.9"])
   end
+  s.add_development_dependency "aws-s3"
 end
 
