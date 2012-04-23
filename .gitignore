@@ -1,3 +1,5 @@
 pkg/*.gem
 Gemfile.lock
 tmp
+vendor/ruby
+.bundle/config
